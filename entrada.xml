@@ -12,22 +12,60 @@
             <contenido>
                 <dron> DronA </dron>
                 <alturas>
-                    <altura valor="valorAltura"> [valorAlfanumerico] </altura>
- ...
+                    <altura valor="1"> B </altura>
+                    <altura valor="2"> C </altura>
+                    <altura valor="3"> D </altura>
+                    <altura valor="4"> A </altura>
+                </alturas>
+                <dron> DronC </dron>
+                <alturas>
+                    <altura valor="1"> A</altura>
+                    <altura valor="2"> E </altura>
+                    <altura valor="3"> I </altura>
+                    <altura valor="4"> 2 </altura>
+                </alturas>
+                <dron> DronB </dron>
+                <alturas>
+                    <altura valor="1"> N</altura>
+                    <altura valor="2"> M </altura>
+                    <altura valor="3"> 7 </altura>
+                    <altura valor="4"> K </altura>
                 </alturas>
             </contenido>
- …
         </sistemaDrones>
- ...
+        <sistemaDrones nombre="Sistema 2">
+            <alturaMaxima>2</alturaMaxima>
+            <cantidadDrones>2</cantidadDrones>
+            <contenido>
+                <dron> DronA </dron>
+                <alturas>
+                    <altura valor="1"> B </altura>
+                    <altura valor="2"> C </altura>
+                </alturas>
+                <dron> DronB </dron>
+                <alturas>
+                    <altura valor="1"> I </altura>
+                    <altura valor="2"> 2 </altura>
+                </alturas>
+            </contenido>
+        </sistemaDrones>        
     </listaSistemasDrones>
     <listaMensajes>
-        <Mensaje nombre="NombreMensaje">
-            <sistemaDrones>[valorAlfanumerico]</sistemaDrones>
+        <Mensaje nombre="Mensaje 1">
+            <sistemaDrones>"Sistema 1" </sistemaDrones>
             <instrucciones>
-                <instruccion dron="NombreDron">[valorNumericoAltura]</instruccion>
- ...
-                </instrucciones>
+                <instruccion dron="DronA">2</instruccion>
+                <instruccion dron="DronB">4</instruccion>
+                <instruccion dron="DronC">3</instruccion>
+            </instrucciones>
         </Mensaje>
-    ...
+        <Mensaje nombre="Mensaje 2">
+            <sistemaDrones>"Sistema 2" </sistemaDrones>
+            <instrucciones>
+                <instruccion dron="DronA">1</instruccion>
+                <instruccion dron="DronB">1</instruccion>
+                <instruccion dron="DronB">2</instruccion>
+            </instrucciones>
+        </Mensaje>        
     </listaMensajes>
 </config>

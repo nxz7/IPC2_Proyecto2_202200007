@@ -26,10 +26,11 @@ def xmlSalida_clicked():
     text_box.delete(1.0, tk.END)
     text_box.insert(tk.END, "Generando reporte de salida.\n")
 
-def sistemaDrones_clicked():
+def Ayuda_clicked():
     text_box.delete(1.0, tk.END)
-    text_box.insert(tk.END, "Generando graficamente un listado de sistema de drones\n")
-
+    text_box.insert(tk.END, "Natalia Mariel Calderon Echeverría\n")
+    text_box.insert(tk.END, "202200007 - IPC 2 - SEGUNDO SEMESTRE 2023\n")
+    text_box.insert(tk.END, "LINK: https://github.com/nxz7/IPC2_Proyecto2_202200007.git\n")
 #archivo_abierto=None
 
 def mensajes_opcion(event):
@@ -61,6 +62,9 @@ def drones_opcion(event):
     elif selected_item == "agregar dron":
         text_box.delete(1.0, tk.END)
         text_box.insert(tk.END, "agregar dron.\n")
+    elif selected_item == "Grafica sistema":
+        text_box.delete(1.0, tk.END)
+        text_box.insert(tk.END, "Graficando sistema.\n")
 
 
 root = tk.Tk()
@@ -71,7 +75,7 @@ root.configure(bg="lemon chiffon")
 buttonAnalizar = tk.Button(root, text="Inicializar", command=Inicializar_clicked, bg="white", fg="blue")
 buttonErrores = tk.Button(root, text="Cargar", command=Cargar_clicked, bg="white", fg="blue")
 buttonReporte = tk.Button(root, text="Xml Salida", command=xmlSalida_clicked, bg="white", fg="blue")
-buttonNuevo = tk.Button(root, text="sistema de Drones", command=sistemaDrones_clicked, bg="white", fg="blue")
+buttonNuevo = tk.Button(root, text="Ayuda", command=Ayuda_clicked, bg="white", fg="blue")
 
 
 
@@ -79,7 +83,7 @@ combo_box = ttk.Combobox(root, values=["Listado de mensajes", "Guardar", "Guarda
 combo_box.set("Gestion mensajes")
 combo_box.bind("<<ComboboxSelected>>", mensajes_opcion)
 
-combo_box2 = ttk.Combobox(root, values=["listado", "agregar dron"])
+combo_box2 = ttk.Combobox(root, values=["listado", "agregar dron","Grafica sistema"])
 combo_box2.set("Gestion drones")
 combo_box2.bind("<<ComboboxSelected>>", drones_opcion)
 

@@ -1,0 +1,27 @@
+digraph G {
+  node [shape=plaintext];
+  label="SDF";
+  bgcolor="palegoldenrod";
+SDF  [
+    label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="5">
+      <tr>
+        <td bgcolor="lightblue">DronW</td>
+        <td bgcolor="lightblue">DronX</td>
+        <td bgcolor="lightblue">DronY</td>
+        <td bgcolor="lightblue">DronZ</td>
+      </tr>
+      <tr>
+        <td bgcolor="White">M</td>
+        <td bgcolor="White">M</td>
+        <td bgcolor="White">C</td>
+        <td bgcolor="White">2</td>
+      </tr>
+      <tr>
+        <td bgcolor="White">L</td>
+        <td bgcolor="White">P</td>
+        <td bgcolor="White">C</td>
+        <td bgcolor="White">2</td>
+      </tr>
+    </table>>
+  ];
+}

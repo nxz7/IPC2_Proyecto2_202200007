@@ -1,6 +1,10 @@
+import os
 import tkinter as tk
 from tkinter import ttk, filedialog
 import xml.etree.ElementTree as ET 
+from lista_sistema import imprimir_tabla, ListaSistemasDrones, parse_xml, generar_archivo_sistema,escribir_dot_sistema
+from lista_drones import lista_drones1, llenar_dron_xml,agregar_actualizar_drones
+
 
 def Inicializar_clicked():
     text_box.delete(1.0, tk.END)
@@ -18,6 +22,11 @@ def Cargar_clicked():
             loaded_xml_data = ET.tostring(root_element, encoding='utf-8').decode('utf-8')
             text_box.delete(1.0, tk.END)  
             text_box.insert(tk.END, loaded_xml_data)
+            lista_sistemas_drones = parse_xml(archivo_abierto)
+            text_box.insert(tk.END, "*********************** CREANDO SISTEMAS **************************\n")
+            text_box.insert(tk.END, "****************CONTENIDO ANALIZADO - SISTEMAS CREADOS************\n")
+            #imprimir_tabla(lista_sistemas_drones)
+            #text_box.insert(tk.END, tabla)
         except Exception as e:
             text_box.delete(1.0, tk.END)  
             text_box.insert(tk.END, f"Error abriendo el  XML : {str(e)}\n")
@@ -31,7 +40,8 @@ def Ayuda_clicked():
     text_box.insert(tk.END, "Natalia Mariel Calderon Echeverría\n")
     text_box.insert(tk.END, "202200007 - IPC 2 - SEGUNDO SEMESTRE 2023\n")
     text_box.insert(tk.END, "LINK: https://github.com/nxz7/IPC2_Proyecto2_202200007.git\n")
-#archivo_abierto=None
+
+archivo_abierto=None
 
 def mensajes_opcion(event):
     global archivo_abierto, loaded_xml_data
@@ -53,18 +63,100 @@ def mensajes_opcion(event):
     elif selected_item == "Salir":
         text_box.insert(tk.END, "No hay archivo abierto para guardar.\n")
 
+
+def mostrar_imprimir_tabla():
+    text_box.delete(1.0, tk.END)
+    try:
+        lista_sistemas_drones = parse_xml(archivo_abierto)
+        text = "**************************************************************\n"
+        text += "********************Sistemas Drones **************************\n"
+        text += imprimir_tabla(lista_sistemas_drones)
+        return text  
+    except Exception as e:
+        text_box.insert(tk.END, f"error en el xml: {str(e)}\n")
+        return ""  
+
+def mostrar_lista_drones():
+    global archivo_abierto
+    text_box.delete(1.0, tk.END)
+    try:
+        dron_lista = llenar_dron_xml(archivo_abierto)
+        drones_text = dron_lista.mostrar_dron()  # agarrar la string del dron
+        text_box.insert(tk.END, "Listado de Drones:\n")
+        text_box.insert(tk.END, drones_text)  
+    except Exception as e:
+        text_box.insert(tk.END, f"Error en el XML: {str(e)}\n")
+
+
+#----------------------------------------------------------
+#lista rapida que lleva el control de los nombres de los archivos
+class nodo_nombre_ar:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class lista_nombre_ar:
+    def __init__(self):
+        self.cabeza = None
+
+    def append(self, value):
+        nuevo_nn = nodo_nombre_ar(value)
+        if not self.cabeza:
+            self.cabeza = nuevo_nn
+        else:
+            current = self.cabeza
+            while current.next:
+                current = current.next
+            current.next = nuevo_nn
+#---------------------------------------------------
+
 def drones_opcion(event):
     selected_item = combo_box2.get()
+    global dron_lista
     if selected_item == "listado":
         text_box.delete(1.0, tk.END)
-        text_box.insert(tk.END, "listado.\n")
-
+        dron_lista = llenar_dron_xml(archivo_abierto)
+        dron_lista.mostrar_dron()
+        text_box.insert(tk.END, "Listado de drones\n")
+        mostrar_lista_drones()
     elif selected_item == "agregar dron":
         text_box.delete(1.0, tk.END)
         text_box.insert(tk.END, "agregar dron.\n")
+        agregar_actualizar_drones(archivo_abierto, dron_lista)
+        text_box.insert(tk.END, "dron agregado.\n")
     elif selected_item == "Grafica sistema":
         text_box.delete(1.0, tk.END)
-        text_box.insert(tk.END, "Graficando sistema.\n")
+        text = mostrar_imprimir_tabla()
+        text_box.insert(tk.END, text)
+        lista_sistemas_drones = parse_xml(archivo_abierto)
+        output_folder = 'C:/Users/natalia/Documents/4sem/ipc2/lab/IPC2_Proyecto2_202200007'
+        
+        # LOS NOMBRE DE LOS ARCHIVOS QUE VAN A SER LOS DEL SISTEMA SIN EXTENSION
+        dot_nombres = lista_nombre_ar()
+
+        #  - HACER EL DOT
+        sistema_actual = lista_sistemas_drones.cabecera
+        while sistema_actual:
+            dot_codigo_es = escribir_dot_sistema(sistema_actual)
+            dot_nombreAR = f'{sistema_actual.nombre}.dot'
+            dot_file_path = os.path.join(output_folder, dot_nombreAR)
+            with open(dot_file_path, 'w') as dot_file:
+                dot_file.write(dot_codigo_es)
+            dot_nombres.append(dot_nombreAR)
+            sistema_actual = sistema_actual.siguiente
+
+        # HACER EL PNG
+        current_nodo = dot_nombres.cabeza
+        while current_nodo:
+            dot_nombreAR = current_nodo.value
+            png_nombreAR = dot_nombreAR.replace(".dot", ".png")
+            dot_ar_path = os.path.join(output_folder, dot_nombreAR)
+            png_ar_path = os.path.join(output_folder, png_nombreAR)
+            os.system(f'dot -Tpng "{dot_ar_path}" -o "{png_ar_path}"')
+            current_nodo = current_nodo.next
+
+        text_box.insert(tk.END, "***** GRAFICOS GENERADOS SATISFACTORIAMENTE *****\n")
+
 
 
 root = tk.Tk()

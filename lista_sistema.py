@@ -150,7 +150,7 @@ def buscar_sistema_dron_altura(lista_sistemas_drones, nombre_sistema, nombre_dro
 
 import os
 
-
+#**************************** GRAFICO DE LOS SISTEMAS *******************************************
 def escribir_dot_sistema(sistema_node):
     dot_code = f'digraph G {{\n'
     dot_code += '  node [shape=plaintext];\n'

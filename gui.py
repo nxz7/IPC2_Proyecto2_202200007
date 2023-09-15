@@ -4,7 +4,7 @@ from tkinter import ttk, filedialog
 import xml.etree.ElementTree as ET 
 from lista_sistema import imprimir_tabla, ListaSistemasDrones, parse_xml, generar_archivo_sistema,escribir_dot_sistema
 from lista_drones import lista_drones1, llenar_dron_xml,agregar_actualizar_drones
-
+from lista_mensajes import imprimir_mensajes, lista_mensajes,parse_mensaje
 
 def Inicializar_clicked():
     text_box.delete(1.0, tk.END)
@@ -46,19 +46,19 @@ archivo_abierto=None
 def mensajes_opcion(event):
     global archivo_abierto, loaded_xml_data
     selected_item = combo_box.get()
-    if selected_item == "Abrir":
-        archivo_abierto = filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")])
-        if archivo_abierto:
-            with open(archivo_abierto, 'r') as xml_file:
-                loaded_xml_data = xml_file.read()
-                text_box.delete(1.0, tk.END)  
-                text_box.insert(tk.END, loaded_xml_data)
+    #listado ------------------------------------
+    if selected_item == "Listado de mensajes":
+        text_box.insert(tk.END, "Listado de mensajes:.\n")
+        lista_mensajes_llena = parse_mensaje(archivo_abierto)
+        mensaje_text = imprimir_mensajes(lista_mensajes_llena)
+        text_box.delete(1.0, tk.END)  
+        text_box.insert(tk.END, mensaje_text)
+    #elegir mensaje y lo del tiempo ------------------------------------
+    elif selected_item == "seleccionar mensaje":
+        text_box.insert(tk.END, "Seleccionar mensaje.\n")
 
-    elif selected_item == "Guardar":
-        text_box.insert(tk.END, "No hay archivo abierto para guardar.\n")
-
-    elif selected_item == "Guardar como":
-        text_box.insert(tk.END, "No hay archivo abierto para guardar.\n")
+    elif selected_item == "GRAFICO":
+        text_box.insert(tk.END, "GRAFICO.\n")
 
     elif selected_item == "Salir":
         text_box.insert(tk.END, "No hay archivo abierto para guardar.\n")
@@ -171,7 +171,7 @@ buttonNuevo = tk.Button(root, text="Ayuda", command=Ayuda_clicked, bg="white", f
 
 
 
-combo_box = ttk.Combobox(root, values=["Listado de mensajes", "Guardar", "Guardar como", "Salir"])
+combo_box = ttk.Combobox(root, values=["Listado de mensajes", "seleccionar mensaje", "GRAFICO", "Salir"])
 combo_box.set("Gestion mensajes")
 combo_box.bind("<<ComboboxSelected>>", mensajes_opcion)
 

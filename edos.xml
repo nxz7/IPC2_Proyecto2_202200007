@@ -5,7 +5,7 @@
       <dron>DronW</dron>
       <dron>DronZ</dron>
       <dron>DronA</dron>
-   <dron>Pepe</dron></listaDrones>
+   <dron>Pepe</dron><dron>lolo</dron></listaDrones>
    <listaSistemasDrones>
       <sistemaDrones nombre="SD1">
          <alturaMaxima>7</alturaMaxima>

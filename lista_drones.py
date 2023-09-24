@@ -34,6 +34,8 @@ class lista_drones1:
             actual = actual.next
         return drones_text
 
+    def clear_listaDrones(self):
+        self.cabeza = None
 
 def llenar_dron_xml(xml_path):
     dron_lista = lista_drones1()

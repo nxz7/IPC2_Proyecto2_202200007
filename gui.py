@@ -10,6 +10,12 @@ from lista_mensajes import imprimir_mensajes, lista_mensajes,parse_mensaje
 def Inicializar_clicked():
     text_box.delete(1.0, tk.END)
     text_box.insert(tk.END, "Inicializando sistema.\n")
+    lista_sistemas_drones.clear_lista()
+    dron_lista.clear_listaDrones()
+    lista_mensajes_llena.clear_listaMensaje()
+    lista_significados_concatenados.clear_listaFinal()
+    text_box.insert(tk.END, "*****SISTEMA INICIALIZADO******.\n")
+
 
 def Cargar_clicked():
     text_box.delete(1.0, tk.END)
@@ -34,7 +40,74 @@ def Cargar_clicked():
 
 def xmlSalida_clicked():
     text_box.delete(1.0, tk.END)
-    text_box.insert(tk.END, "Generando reporte de salida.\n")
+    text_box.insert(tk.END, "Generating reporte de salida.\n")
+
+    if lista_significados_concatenados is not None:
+        
+        root = ET.Element("respuesta")
+        listaMensajes = ET.SubElement(root, "listaMensajes")
+
+        for mensaje_item in lista_significados_concatenados.iter_nodes():
+            
+            sistema_actual = lista_sistemas_drones.cabecera
+            altura_maxima = None  
+
+            while sistema_actual:
+                if sistema_actual.nombre == mensaje_item.sis_nombre:
+                    altura_maxima = sistema_actual.altura_maxima
+                    break  # para cuando encuentra el sistema
+
+                sistema_actual = sistema_actual.siguiente
+
+            if altura_maxima is not None:
+                mensaje = ET.SubElement(listaMensajes, "mensaje", nombre=mensaje_item.mens_nombre)
+                sistemaDrones = ET.SubElement(mensaje, "sistemaDrones")
+                sistemaDrones.text = mensaje_item.sis_nombre
+
+                Altura = ET.SubElement(mensaje, "tiempoOptimo")
+                Altura.text = str(altura_maxima)
+
+                mensajeRecibido = ET.SubElement(mensaje, "mensajeRecibido")
+                mensajeRecibido.text = mensaje_item.conc_significado
+
+                # busca el sistema que se esta viendo
+                sistema_actual = lista_sistemas_drones.cabecera
+                while sistema_actual:
+                    if sistema_actual.nombre == mensaje_item.sis_nombre:
+                        instrucciones = ET.SubElement(mensaje, "instrucciones")
+
+                        for altura in range(1, altura_maxima + 1):
+                            altura_element = ET.SubElement(instrucciones, "tiempo", valor=str(altura))
+                            acciones = ET.SubElement(altura_element, "acciones")
+
+                            dron_actual = sistema_actual.cabecera_drones
+                            while dron_actual:
+                                altura_actual = dron_actual.cabecera_alturas
+                                while altura_actual and altura_actual.valor != altura:
+                                    altura_actual = altura_actual.siguiente
+                                if altura_actual:
+                                    dron_element = ET.SubElement(acciones, "dron", nombre=dron_actual.nombre_dron)
+                                    dron_element.text = altura_actual.datos  
+                                else:
+                                    dron_element = ET.SubElement(acciones, "dron", nombre=dron_actual.nombre_dron)
+                                    dron_element.text = ""  # si no existe/no encuentra 
+                                dron_actual = dron_actual.siguiente
+
+                    sistema_actual = sistema_actual.siguiente
+
+        
+        tree = ET.ElementTree(root)
+        tree.write("salida.xml", encoding="UTF-8", xml_declaration=True, method="xml", short_empty_elements=False)
+        
+        # la identacion u los espacion
+        import xml.dom.minidom
+        xml = xml.dom.minidom.parse("salida.xml")
+        with open("salida.xml", "w") as xml_file:
+            xml_file.write(xml.toprettyxml())
+
+        text_box.insert(tk.END, "Reporte de salida GENERADO salida.xml.\n")
+    else:
+        text_box.insert(tk.END, "NO HAY INFORMACION SOBRE EL RECORRIDO.\n")
 
 def Ayuda_clicked():
     text_box.delete(1.0, tk.END)
@@ -47,44 +120,61 @@ archivo_abierto=None
 lista_mensajes_llena = None  
 
 
-#----------------------LISTA RAPIDA PARA IR MOSTRANDO LOS MENSAJE-----------------------
-class NodoMensajeSignificado:
-    def __init__(self, mensaje):
-        self.mensaje = mensaje
+            
+# !!!!!!!!!!!!!! significado de los mensajes --------> xml de salida
+class nodo_final:
+    def __init__(self, sis_nombre, mens_nombre, conc_significado):
+        self.sis_nombre = sis_nombre
+        self.mens_nombre = mens_nombre
+        self.conc_significado = conc_significado
         self.next = None
 
-class ListaMensajeSignificado:
+class lista_final:
     def __init__(self):
-        self.cabeza = None
+        self.head = None
 
-    def append(self, mensaje):
-        nuevo_nodo = NodoMensajeSignificado(mensaje)
-        if not self.cabeza:
-            self.cabeza = nuevo_nodo
+    def append(self, sis_nombre, mens_nombre, conc_significado):
+        new_node = nodo_final(sis_nombre, mens_nombre, conc_significado)
+        if not self.head:
+            self.head = new_node
         else:
-            current = self.cabeza
+            current = self.head
             while current.next:
                 current = current.next
-            current.next = nuevo_nodo
-#----------------------LISTA RAPIDA PARA IR MOSTRANDO LOS MENSAJE-----------------------
+            current.next = new_node
+
+    def iter_nodes(self):
+        current = self.head
+        while current:
+            yield current
+            current = current.next
+    def clear_listaFinal(self):
+        self.head = None
 
 
-def mostrar_mensaje_significado(lista_mensajes, lista_sistemas_drones):
-    global lista_mensajes_llena  
+lista_significados_concatenados=None
+lista_significados_concatenados = lista_final()
+
+def llenar_lista_significados_concatenados(lista_mensajes, lista_sistemas_drones):
+    global lista_mensajes_llena,lista_significados_concatenados
 
     root = tk.Tk()
-    root.withdraw()  
+    root.withdraw()
     nombre_mensaje = askstring("Input", "INGRESE NOMBRE DEL MENSAJE:")
 
-    if nombre_mensaje is not None:  
+    if nombre_mensaje is not None:
         if lista_mensajes_llena is None:
             lista_mensajes_llena = parse_mensaje(archivo_abierto)
 
+        #lista_significados_concatenados = lista_final()  
+
+        sis_nombre = None
+        mens_nombre = None
+        conc_significado = ""
+
         actual = lista_mensajes.cabeza
-        mensaje_significado_lista = ListaMensajeSignificado()  # LA LISTA RAPIDA DE ARRIBA PARA IR GUARDANDO LAS LETRAS DEL SIGNiFOCADO
         while actual:
             if actual.nombre_mensaje == nombre_mensaje:
-                # BUSCAR EL SIGNIFICADO QUE ES LA LETRA
                 significado = buscar_sistema_dron_altura(
                     lista_sistemas_drones,
                     actual.nombre_sistema,
@@ -92,20 +182,27 @@ def mostrar_mensaje_significado(lista_mensajes, lista_sistemas_drones):
                     int(actual.valor)
                 )
                 actual.significado = significado
-                mensaje_significado_lista.append(
-                    f"nombre_sistema: {actual.nombre_sistema}, "
-                    f"nombre_mensaje: {actual.nombre_mensaje}, "
-                    f"significado: {actual.significado}"
-                )
+                
+                if sis_nombre is None and mens_nombre is None:
+                    sis_nombre = actual.nombre_sistema
+                    mens_nombre = actual.nombre_mensaje
+                
+                if actual.nombre_sistema == sis_nombre and actual.nombre_mensaje == mens_nombre:
+                    conc_significado += actual.significado
+                
             actual = actual.next
 
-        # PONERLO EN TEXTBOX
-        text_box.delete(1.0, tk.END)
-        current = mensaje_significado_lista.cabeza
+
+        lista_significados_concatenados.append(sis_nombre, mens_nombre, conc_significado)
+
+
+        #text_box.delete(1.0, tk.END)
+        current = lista_significados_concatenados.head
         while current:
-            text_box.insert(tk.END, current.mensaje + "\n")
+            text_box.insert(tk.END, f"nombre_sistema: {current.sis_nombre}, nombre_mensaje: {current.mens_nombre}, significado: {current.conc_significado}\n")
             current = current.next
 
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #------------------------------------------MENSAJES/RECORRIDO/SUBIR/BAJAR/ESPERAR
 
@@ -234,8 +331,10 @@ def mensajes_opcion(event):
         text_box.insert(tk.END, mensaje_text)
     #elegir mensaje y lo del tiempo ------------------------------------
     elif selected_item == "seleccionar mensaje":
+        #text_box.delete(1.0, tk.END) 
         text_box.insert(tk.END, "Seleccionar mensaje.\n")
-        mostrar_mensaje_significado(lista_mensajes_llena,lista_sistemas_drones)
+        #mostrar_mensaje_significado(lista_mensajes_llena,lista_sistemas_drones)
+        llenar_lista_significados_concatenados(lista_mensajes_llena, lista_sistemas_drones)
 
     elif selected_item == "modificar":
         text_box.insert(tk.END, "modificar.\n")
@@ -333,7 +432,7 @@ def drones_opcion(event):
         text_box.insert(tk.END, "Listado de drones\n")
         mostrar_lista_drones()
     elif selected_item == "agregar dron":
-        text_box.delete(1.0, tk.END)
+        #text_box.delete(1.0, tk.END)
         text_box.insert(tk.END, "agregar dron.\n")
         agregar_actualizar_drones(archivo_abierto, dron_lista)
         text_box.insert(tk.END, "dron agregado.\n")

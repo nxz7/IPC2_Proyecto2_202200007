@@ -13,6 +13,8 @@ class lista_mensajes:
             while actual.next:
                 actual = actual.next
             actual.next = nodo
+    def clear_listaMensaje(self):
+        self.cabeza = None
 
 def parse_mensaje(xml_path):
     tree = ET.parse(xml_path)

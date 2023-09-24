@@ -37,6 +37,9 @@ class ListaSistemasDrones:
             self.cola.siguiente = nodo_sistema
             nodo_sistema.anterior = self.cola
             self.cola = nodo_sistema
+    
+    def clear_lista(self):
+        self.cabecera = None
 
 def parse_xml(ruta_archivo_xml):
     # INSTANCIA DE LA LISTA BASE DE DRONES PARA LLENAR LISTAS

@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<respuesta>
+	<listaMensajes>
+		<mensaje nombre="msg">
+			<sistemaDrones>SD1</sistemaDrones>
+			<tiempoOptimo>7</tiempoOptimo>
+			<mensajeRecibido>ACRv</mensajeRecibido>
+			<instrucciones>
+				<tiempo valor="1">
+					<acciones>
+						<dron nombre="DronX">N</dron>
+						<dron nombre="DronA">emitir luz</dron>
+						<dron nombre="DronZ">subir</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="2">
+					<acciones>
+						<dron nombre="DronX">emitir luz</dron>
+						<dron nombre="DronA">esperar</dron>
+						<dron nombre="DronZ">subir</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="3">
+					<acciones>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronA">emitir luz</dron>
+						<dron nombre="DronZ">esperar</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="4">
+					<acciones>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronA">esperar</dron>
+						<dron nombre="DronZ">esperar</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="5">
+					<acciones>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronA">esperar</dron>
+						<dron nombre="DronZ">emitir luz</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="6">
+					<acciones>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronA">esperar</dron>
+						<dron nombre="DronZ">esperar</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="7">
+					<acciones>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronA">esperar</dron>
+						<dron nombre="DronZ">esperar</dron>
+					</acciones>
+				</tiempo>
+			</instrucciones>
+		</mensaje>
+		<mensaje nombre="msg2">
+			<sistemaDrones>SDF</sistemaDrones>
+			<tiempoOptimo>2</tiempoOptimo>
+			<mensajeRecibido>JEJE</mensajeRecibido>
+			<instrucciones>
+				<tiempo valor="1">
+					<acciones>
+						<dron nombre="DronW">emitir luz</dron>
+						<dron nombre="DronX">emitir luz</dron>
+						<dron nombre="DronY">emitir luz</dron>
+						<dron nombre="DronZ">emitir luz</dron>
+					</acciones>
+				</tiempo>
+				<tiempo valor="2">
+					<acciones>
+						<dron nombre="DronW">esperar</dron>
+						<dron nombre="DronX">esperar</dron>
+						<dron nombre="DronY">esperar</dron>
+						<dron nombre="DronZ">esperar</dron>
+					</acciones>
+				</tiempo>
+			</instrucciones>
+		</mensaje>
+	</listaMensajes>
+</respuesta>

@@ -372,6 +372,7 @@ def mensajes_opcion(event):
 
     elif selected_item == "Salir":
         text_box.insert(tk.END, "salir.\n")
+        root.destroy()
 
 lista_sistemas_drones=None
 #-------------------
